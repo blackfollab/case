@@ -1,0 +1,147 @@
+:root {
+    --fema-blue: #005ea2;
+    --fema-dark-blue: #1a4480;
+    --fema-light-blue: #d9e8f6;
+    --fema-green: #2e8540;
+    --gov-gray: #f0f0f0;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Loading Screen */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.fema-loader {
+    width: 60px;
+    height: 60px;
+    border: 4px solid var(--fema-light-blue);
+    border-top: 4px solid var(--fema-blue);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Login Styles */
+.login-header {
+    background: linear-gradient(135deg, var(--fema-blue) 0%, var(--fema-dark-blue) 100%);
+    color: white;
+    border-bottom: 4px solid #ffbe2e;
+}
+
+.fema-logo {
+    background: white;
+    color: var(--fema-blue);
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.login-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    padding: 2rem;
+    border: 1px solid #e0e0e0;
+}
+
+.security-badge {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--fema-green) 0%, #4CAF50 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2rem;
+    margin: 0 auto 1rem;
+}
+
+/* Dashboard Styles */
+.dashboard-header {
+    background: linear-gradient(135deg, var(--fema-blue) 0%, var(--fema-dark-blue) 100%);
+    color: white;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.session-status {
+    background: rgba(255,255,255,0.1);
+    padding: 5px 10px;
+    border-radius: 15px;
+}
+
+/* Card Styles */
+.dashboard-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    border: 1px solid #e0e0e0;
+    margin-bottom: 1.5rem;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-left: 4px solid var(--fema-blue);
+    padding: 1.5rem;
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, var(--fema-green) 0%, #4CAF50 100%);
+    height: 25px;
+    border-radius: 12px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .login-card {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .dashboard-header .d-flex {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .session-status {
+        margin-top: 1rem;
+    }
+}
+
+/* Security Elements */
+.security-notice {
+    background: var(--fema-light-blue);
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+/* Table Styles */
+.payment-table th {
+    background: var(--fema-light-blue);
+    font-weight: 600;
+}
+
+/* Utility Classes */
+.text-fema-blue { color: var(--fema-blue); }
+.bg-fema-light { background: var(--fema-light-blue); }

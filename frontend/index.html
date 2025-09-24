@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FEMA - Case Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="fema-loader"></div>
+            <h4>FEMA Case Management System</h4>
+            <p>Initializing secure connection...</p>
+        </div>
+    </div>
+
+    <!-- Login Screen -->
+    <section id="login-section" class="d-none">
+        <div class="login-header">
+            <div class="container">
+                <div class="d-flex align-items-center py-3">
+                    <div class="fema-logo">FEMA</div>
+                    <div class="ms-3">
+                        <h1 class="h4 mb-0">Federal Emergency Management Agency</h1>
+                        <p class="mb-0 text-light">Secure Case Management Portal</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row justify-content-center py-5">
+                <div class="col-md-6 col-lg-5">
+                    <div class="login-card">
+                        <div class="text-center mb-4">
+                            <div class="security-badge">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <h3>Secure Access Portal</h3>
+                            <p class="text-muted">Enter your case credentials</p>
+                        </div>
+
+                        <form id="login-form">
+                            <div class="mb-3">
+                                <label class="form-label">Case Number</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-file-contract"></i></span>
+                                    <input type="text" class="form-control" id="case-number" 
+                                           placeholder="FEMA/2023-123456" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Last Name</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    <input type="text" class="form-control" id="last-name" 
+                                           placeholder="Enter your last name" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label">Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                    <input type="password" class="form-control" id="password" 
+                                           placeholder="Enter your password" required>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100 py-2" id="login-btn">
+                                <i class="fas fa-sign-in-alt me-2"></i>Access Case
+                            </button>
+                        </form>
+
+                        <div id="login-alert" class="alert alert-danger mt-3 d-none"></div>
+
+                        <div class="login-footer mt-4">
+                            <div class="security-notice">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <small>This is a secure U.S. Government system</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard -->
+    <section id="dashboard-section" class="d-none">
+        <header class="dashboard-header">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="fema-logo me-3">FEMA</div>
+                        <div>
+                            <h1 class="h4 mb-0">Case Management Dashboard</h1>
+                            <p class="mb-0 text-light" id="welcome-message">Welcome back</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <div class="session-status me-3">
+                            <i class="fas fa-circle text-success me-1"></i>
+                            <small>Secure Connection</small>
+                        </div>
+                        <button class="btn btn-outline-light btn-sm" onclick="logout()">
+                            <i class="fas fa-sign-out-alt me-1"></i>Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="container py-4">
+            <!-- Dashboard content will be loaded here -->
+            <div id="dashboard-content"></div>
+        </div>
+    </section>
+
+    <script src="app.js"></script>
+</body>
+</html>
