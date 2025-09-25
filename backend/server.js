@@ -15,9 +15,8 @@ const JWT_SECRET = process.env.JWT_SECRET || 'fema_secure_key_2024';
 // CORS Configuration - Fixed for your Netlify domain
 app.use(cors({
     origin: [
-        'https://femacase.netlify.app',  // Your exact Netlify domain
         'https://whitesmoke-loris-366484.hostingersite.com',         // All Netlify subdomains
-        'http://localhost:3000',
+        'https://femacase.netlify.app', 
         'http://localhost:8080',
         'http://localhost:5500'
     ],
