@@ -145,3 +145,47 @@ body {
 /* Utility Classes */
 .text-fema-blue { color: var(--fema-blue); }
 .bg-fema-light { background: var(--fema-light-blue); }
+
+.user-photo, .lawyer-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #005ea2;
+}
+
+.dashboard-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.court-event {
+    border-left: 3px solid #005ea2;
+    padding-left: 15px;
+    margin-bottom: 15px;
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, #28a745, #20c997);
+}
+
+.security-status {
+    color: #28a745;
+    font-weight: bold;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .user-photo, .lawyer-photo {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .dashboard-card {
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+}
