@@ -161,15 +161,15 @@ app.get('/api/dashboard', authenticateToken, (req, res) => {
 
         // Get payments (last 6 months)
         const payments = readJSON('payments.json');
-        const sixMonthsAgo = new Date();
-        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 12);
+        const twelveMonthsAg = new Date();
+        twelveMonthsAg.setMonth(twelveMonthsAg.getMonth() - 12);
 
         const userPayments = payments
             .filter(p => p.case_number === userCaseNumber)
             .filter(p => {
                 try {
                     const paymentDate = new Date(p.payment_date);
-                    return paymentDate >= sixMonthsAgo;
+                    return paymentDate >= twelveMonthsAg;
                 } catch (e) {
                     return false;
                 }
