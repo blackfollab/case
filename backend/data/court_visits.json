@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "case_number": "FEMA/2023-123456",
+    "date": "2024-01-15",
+    "type": "Status Hearing",
+    "purpose": "Case Review",
+    "location": "Federal Courthouse",
+    "outcome": "CONTINUED",
+    "judge": "Hon. Maria Rodriguez"
+  },
+  {
+    "id": 2,
+    "case_number": "FEMA/2023-123456", 
+    "date": "2024-02-20",
+    "type": "Settlement Conference",
+    "purpose": "Payment Agreement",
+    "location": "Judge's Chambers",
+    "outcome": "APPROVED",
+    "judge": "Hon. Robert Chen"
+  }
+]
