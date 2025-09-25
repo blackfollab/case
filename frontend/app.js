@@ -217,7 +217,7 @@ class FEMACaseSystem {
                     <h5 class="mb-0">Payment History</h5>
                     <small class="text-muted">Last 6 months</small>
                 </div>
-                ${this.generatePaymentsHTML(payments || [])}
+                ${this.generatePaymentsHTML(data.payments || [])}
             </div>
 
             <!-- Legal Representative -->
