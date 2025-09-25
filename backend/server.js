@@ -161,8 +161,6 @@ app.get('/api/dashboard', authenticateToken, (req, res) => {
 
         // Get payments (last 6 months)
         const payments = readJSON('payments.json');
-       okay we were working on a case project and they was this column that reads the payments.json file inside the backend/data folder  and sorts the payment by the last 6 months, i want to increase it to twelve and i think its not working: i tried to change payment count from 6 months to twelve months: // Get payments (last 6 months)
-        const payments = readJSON('payments.json');
         const sixMonthsAgo = new Date();
         sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
 
