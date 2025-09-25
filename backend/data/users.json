@@ -1,15 +1,15 @@
 [
   {
     "id": 1,
-    "case_number": "FEMA/2023-123456",
-    "last_name": "cle",
+    "case_number": "FEMA/2024-0258",
+    "last_name": "Msarwe",
     "password": "123456",
-    "first_name": "John",
+    "first_name": "Rafat",
     "photo_url": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
-    "email": "john.cle@example.com",
-    "phone": "+1234567890",
-    "total_amount": 75000,
-    "case_start_date": "2023-03-15",
-    "status": "active"
+    "email": "rafaat_fersan@hotmail.com",
+    "phone": "+972524786395",
+    "total_amount": 3500,
+    "case_start_date": "2023-09-28",
+    "status": "ongoing"
   }
 ]
