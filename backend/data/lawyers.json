@@ -1,12 +1,12 @@
 [
-    {
-      "id": 1,
-      "case_number": "FEMA/2023-123456",
-      "name": "Sarah Johnson, Esq.",
-      "email": "sarah.johnson@fema.dhs.gov",
-      "phone": "(202) 555-7890",
-      "bar_number": "DC-12345",
-      "specialization": "Disaster Recovery Cases",
-      "office_address": "500 C Street SW, Washington, DC 20472"
-    }
-  ]
+  {
+    "id": 1,
+    "case_number": "FEMA/2023-123456",
+    "name": "Sarah Johnson, Esq.",
+    "photo_url": "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&h=150&fit=crop&crop=face",
+    "email": "sarah.johnson@fema.dhs.gov",
+    "phone": "(202) 555-7890",
+    "bar_number": "DC-12345",
+    "specialization": "Disaster Recovery Law"
+  }
+]
