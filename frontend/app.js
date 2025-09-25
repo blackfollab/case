@@ -1,469 +1,193 @@
 class FEMACaseSystem {
     constructor() {
-        this.API_BASE = 'https://case-1w9w.onrender.com/api'
-        
-        this.state = {
-            token: null,
-            user: null,
-            sessionTimer: null
-        };
-        
+        this.API_BASE = 'https://case-1w9w.onrender.com/api';
+        this.state = { token: null, user: null };
         this.init();
     }
 
     async init() {
-        console.log('🚀 FEMA System Initializing...');
-        
-        // Check for existing session
         await this.checkExistingSession();
-        
-        // Setup event listeners
-        this.setupEventListeners();
-    }
-
-    setupEventListeners() {
-        // Login form
-        const loginForm = document.getElementById('login-form');
-        if (loginForm) {
-            loginForm.addEventListener('submit', (e) => this.handleLogin(e));
-        }
-
-        // Prevent navigation away without warning
-        window.addEventListener('beforeunload', (e) => {
-            if (this.state.token) {
-                e.preventDefault();
-                e.returnValue = 'You will be logged out if you leave this page.';
-            }
-        });
-    }
-
-    async checkExistingSession() {
-        const savedToken = localStorage.getItem('fema_token');
-        const savedUser = localStorage.getItem('fema_user');
-
-        if (savedToken && savedUser) {
-            try {
-                // Verify token is still valid
-                const isValid = await this.verifyToken(savedToken);
-                if (isValid) {
-                    this.state.token = savedToken;
-                    this.state.user = JSON.parse(savedUser);
-                    await this.loadDashboard();
-                    this.showDashboard();
-                    return;
-                }
-            } catch (error) {
-                console.error('Session validation failed:', error);
-            }
-        }
-
-        // No valid session found
-        this.clearSession();
-        this.showLogin();
+        document.getElementById('login-form').addEventListener('submit', (e) => this.handleLogin(e));
     }
 
     async handleLogin(event) {
         event.preventDefault();
+        const loginBtn = document.getElementById('login-btn');
         
-        const caseNumber = document.getElementById('case-number').value.trim();
-        const lastName = document.getElementById('last-name').value.trim();
-        const password = document.getElementById('password').value;
-        
-        if (!this.validateLoginInput(caseNumber, lastName, password)) {
-            this.showAlert('Please fill in all fields correctly.', 'danger');
-            return;
-        }
-
-        this.setLoginButtonState(true);
+        loginBtn.disabled = true;
+        loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing In...';
 
         try {
-            const response = await this.apiCall('/login', 'POST', {
-                case_number: caseNumber,
-                last_name: lastName,
-                password: password
-            });
+            const formData = {
+                case_number: document.getElementById('case-number').value,
+                last_name: document.getElementById('last-name').value,
+                password: document.getElementById('password').value
+            };
 
+            const response = await this.apiCall('/login', 'POST', formData);
+            
             if (response.success) {
-                await this.handleSuccessfulLogin(response);
+                this.state.token = response.token;
+                this.state.user = response.user;
+                localStorage.setItem('fema_session', JSON.stringify({ token: response.token, user: response.user }));
+                await this.loadDashboard();
+                this.showDashboard();
             } else {
-                this.showAlert(response.error || 'Login failed. Please check your credentials.', 'danger');
+                this.showAlert(response.error, 'danger');
             }
         } catch (error) {
-            this.showAlert('Network error: Please check your connection and try again.', 'danger');
+            this.showAlert('Login failed: ' + error.message, 'danger');
         } finally {
-            this.setLoginButtonState(false);
+            loginBtn.disabled = false;
+            loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Access Case';
         }
-    }
-
-    async handleSuccessfulLogin(response) {
-        this.state.token = response.token;
-        this.state.user = response.user;
-        
-        // Store session
-        localStorage.setItem('fema_token', response.token);
-        localStorage.setItem('fema_user', JSON.stringify(response.user));
-        
-        // Load dashboard data
-        await this.loadDashboard();
-        this.showDashboard();
-        
-        this.showAlert('Login successful!', 'success', 3000);
     }
 
     async loadDashboard() {
         this.showLoadingState();
-        
         try {
             const response = await this.apiCall('/dashboard', 'GET');
-            
-            if (response.success) {
-                this.displayDashboard(response.data);
-            } else {
-                throw new Error(response.error);
-            }
+            this.displayDashboardData(response.data);
         } catch (error) {
-            this.showAlert('Failed to load dashboard data. Please try logging in again.', 'danger');
-            this.logout();
+            this.showAlert('Failed to load dashboard', 'danger');
         } finally {
             this.hideLoadingState();
         }
     }
 
-    displayDashboard(data) {
-        // Update user welcome message
-        document.getElementById('welcome-message').textContent = 
-            `Welcome back, ${data.user.first_name}`;
-
-        // Create dashboard HTML
+    displayDashboardData(data) {
         document.getElementById('dashboard-content').innerHTML = this.generateDashboardHTML(data);
     }
 
     generateDashboardHTML(data) {
         return `
-            <!-- Case Summary -->
-            <div class="row mb-4">
-                <div class="col-md-4 mb-3">
-                    <div class="dashboard-card p-4 text-center">
-                        <div class="user-avatar mb-3">
-                            <i class="fas fa-user-shield fa-2x text-fema-blue"></i>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="dashboard-card">
+                        <div class="text-center">
+                            <img src="${data.user.photo_url || 'https://via.placeholder.com/150'}" 
+                                 class="user-photo" alt="User Photo">
+                            <h4>${data.user.first_name} ${data.user.last_name}</h4>
+                            <p class="text-muted">${data.user.case_number}</p>
+                            <span class="badge bg-success">${data.user.status}</span>
                         </div>
-                        <h4>${data.user.first_name} ${data.user.last_name}</h4>
-                        <p class="text-muted mb-2">${data.user.case_number}</p>
-                        <span class="badge bg-success">${data.user.status.toUpperCase()}</span>
                     </div>
                 </div>
                 
                 <div class="col-md-8">
-                    <div class="row h-100">
-                        <div class="col-6 mb-3">
-                            <div class="stat-card">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="text-muted mb-1">Total Amount</h6>
-                                        <h3 class="mb-0">$${data.user.total_amount.toLocaleString()}</h3>
-                                    </div>
-                                    <i class="fas fa-dollar-sign fa-2x text-muted"></i>
-                                </div>
-                            </div>
+                    <div class="dashboard-card">
+                        <h5><i class="fas fa-lock text-success"></i> Security Status: <span class="text-success">Secure</span></h5>
+                        <div class="progress mb-3">
+                            <div class="progress-bar" style="width: ${data.progress}%">${data.progress}% Complete</div>
                         </div>
-                        <div class="col-6 mb-3">
-                            <div class="stat-card">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="text-muted mb-1">Amount Paid</h6>
-                                        <h3 class="mb-0 text-success">$${data.amount_paid.toLocaleString()}</h3>
-                                    </div>
-                                    <i class="fas fa-check-circle fa-2x text-success"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="stat-card">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="text-muted mb-1">Amount Remaining</h6>
-                                        <h3 class="mb-0 text-warning">$${data.amount_remaining.toLocaleString()}</h3>
-                                    </div>
-                                    <i class="fas fa-clock fa-2x text-warning"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="stat-card">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="text-muted mb-1">Completion</h6>
-                                        <h3 class="mb-0">${data.progress}%</h3>
-                                    </div>
-                                    <i class="fas fa-chart-line fa-2x text-primary"></i>
-                                </div>
-                            </div>
-                        </div>
+                    </div>
+
+                    <!-- Court Timeline -->
+                    <div class="dashboard-card">
+                        <h5><i class="fas fa-gavel"></i> Court Timeline</h5>
+                        ${this.generateCourtTimeline(data.court_visits)}
                     </div>
                 </div>
             </div>
 
-            <!-- Progress Bar -->
-            <div class="dashboard-card p-4 mb-4">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="mb-0">Payment Progress</h5>
-                    <span class="badge bg-primary">${data.progress}% Complete</span>
-                </div>
-                <div class="progress mb-2" style="height: 25px;">
-                    <div class="progress-bar" style="width: ${data.progress}%">
-                        ${data.progress}%
+            <!-- Payments Section -->
+            <div class="dashboard-card">
+                <h5>Payment History</h5>
+                ${this.generatePaymentsTable(data.payments)}
+            </div>
+
+            <!-- Lawyer Section -->
+            <div class="dashboard-card">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h5>Assigned Legal Representative</h5>
+                        <div class="d-flex align-items-center">
+                            <img src="${data.lawyer.photo_url || 'https://via.placeholder.com/100'}" 
+                                 class="lawyer-photo me-3" alt="Lawyer Photo">
+                            <div>
+                                <h6>${data.lawyer.name || 'Not Assigned'}</h6>
+                                <p class="mb-1">${data.lawyer.email || ''}</p>
+                                <p class="mb-0">${data.lawyer.phone || ''}</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <small class="text-muted">Based on total settlement amount and verified payments</small>
-            </div>
-
-            <!-- Payment History -->
-            <div class="dashboard-card p-4 mb-4">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="mb-0">Payment History</h5>
-                    <small class="text-muted">Last 6 months</small>
-                </div>
-                ${this.generatePaymentsHTML(data.payments)}
-            </div>
-
-            <!-- Legal Representative -->
-            <div class="dashboard-card p-4">
-                <h5 class="mb-3">Assigned Legal Representative</h5>
-                ${this.generateLawyerHTML(data.lawyer)}
-            </div>
-
-            <!-- System Info -->
-            <div class="alert alert-info mt-4">
-                <small>
-                    <i class="fas fa-info-circle me-2"></i>
-                    Last updated: ${new Date(data.last_updated).toLocaleString()} | 
-                    Secure FEMA Case Management System
-                </small>
             </div>
         `;
     }
 
-    generatePaymentsHTML(payments) {
-        if (!payments || payments.length === 0) {
-            return `
-                <div class="text-center py-4">
-                    <i class="fas fa-receipt fa-3x text-muted mb-3"></i>
-                    <p class="text-muted">No payment history available for the last 6 months</p>
-                </div>
-            `;
-        }
+    generateCourtTimeline(visits) {
+        if (!visits.length) return '<p class="text-muted">No court visits recorded</p>';
+        
+        return visits.map(visit => `
+            <div class="court-event">
+                <div class="court-date">${new Date(visit.date).toLocaleDateString()}</div>
+                <div class="court-type">${visit.type} - ${visit.purpose}</div>
+                <div class="court-outcome badge bg-${visit.outcome === 'APPROVED' ? 'success' : 'warning'}">${visit.outcome}</div>
+            </div>
+        `).join('');
+    }
 
+    generatePaymentsTable(payments) {
+        if (!payments.length) return '<p class="text-muted">No payments available</p>';
+        
         return `
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead class="table-light">
+            <table class="table table-striped">
+                <thead>
+                    <tr><th>Date</th><th>Amount</th><th>Status</th><th>Reference</th></tr>
+                </thead>
+                <tbody>
+                    ${payments.map(p => `
                         <tr>
-                            <th>Date</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                            <th>Reference ID</th>
-                            <th>Description</th>
+                            <td>${new Date(p.payment_date).toLocaleDateString()}</td>
+                            <td>$${p.amount.toLocaleString()}</td>
+                            <td><span class="badge bg-success">${p.status}</span></td>
+                            <td>${p.reference_id}</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        ${payments.map(payment => `
-                            <tr>
-                                <td>${new Date(payment.payment_date).toLocaleDateString()}</td>
-                                <td class="fw-semibold">$${payment.amount.toLocaleString()}</td>
-                                <td>
-                                    <span class="badge ${payment.status === 'completed' ? 'bg-success' : 'bg-warning'}">
-                                        ${payment.status}
-                                    </span>
-                                </td>
-                                <td><code>${payment.reference_id}</code></td>
-                                <td>${payment.description || 'Payment'}</td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            </div>
+                    `).join('')}
+                </tbody>
+            </table>
         `;
     }
 
-    generateLawyerHTML(lawyer) {
-        if (!lawyer || !lawyer.name) {
-            return `
-                <div class="alert alert-warning">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    No legal representative has been assigned to your case yet.
-                </div>
-            `;
-        }
-
-        return `
-            <div class="row">
-                <div class="col-md-8">
-                    <h6>${lawyer.name}</h6>
-                    <p class="text-muted mb-3">FEMA Case Attorney</p>
-                    
-                    ${lawyer.email ? `
-                        <p class="mb-2">
-                            <i class="fas fa-envelope me-2 text-muted"></i>
-                            <a href="mailto:${lawyer.email}">${lawyer.email}</a>
-                        </p>
-                    ` : ''}
-                    
-                    ${lawyer.phone ? `
-                        <p class="mb-2">
-                            <i class="fas fa-phone me-2 text-muted"></i>
-                            ${lawyer.phone}
-                        </p>
-                    ` : ''}
-                    
-                    ${lawyer.bar_number ? `
-                        <p class="mb-2">
-                            <i class="fas fa-id-card me-2 text-muted"></i>
-                            Bar Number: ${lawyer.bar_number}
-                        </p>
-                    ` : ''}
-                    
-                    ${lawyer.specialization ? `
-                        <p class="mb-2">
-                            <i class="fas fa-briefcase me-2 text-muted"></i>
-                            ${lawyer.specialization}
-                        </p>
-                    ` : ''}
-                </div>
-                <div class="col-md-4 text-center">
-                    <div class="bg-fema-light rounded p-4">
-                        <i class="fas fa-user-tie fa-3x text-fema-blue mb-3"></i>
-                        <p class="small text-muted mb-0">Your assigned attorney will contact you regarding case updates</p>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    // API Methods
-    async apiCall(endpoint, method = 'GET', data = null) {
-        const url = this.API_BASE + endpoint;
-        const options = {
-            method: method,
+    async apiCall(endpoint, method, data) {
+        const response = await fetch(this.API_BASE + endpoint, {
+            method,
             headers: {
                 'Content-Type': 'application/json',
-            }
-        };
-
-        if (this.state.token) {
-            options.headers['Authorization'] = `Bearer ${this.state.token}`;
-        }
-
-        if (data && method !== 'GET') {
-            options.body = JSON.stringify(data);
-        }
-
-        const response = await fetch(url, options);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-        }
-
+                'Authorization': this.state.token ? `Bearer ${this.state.token}` : ''
+            },
+            body: data ? JSON.stringify(data) : undefined
+        });
         return await response.json();
     }
 
-    async verifyToken(token) {
-        try {
-            const response = await this.apiCall('/verify-token', 'POST', { token });
-            return response.valid;
-        } catch (error) {
-            return false;
-        }
-    }
-
-    // UI Methods
-    showLogin() {
-        this.hideAllSections();
-        document.getElementById('login-section').classList.remove('d-none');
-    }
-
-    showDashboard() {
-        this.hideAllSections();
-        document.getElementById('dashboard-section').classList.remove('d-none');
-    }
-
-    hideAllSections() {
-        document.getElementById('loading-screen').classList.add('d-none');
-        document.getElementById('login-section').classList.add('d-none');
-        document.getElementById('dashboard-section').classList.add('d-none');
-    }
-
     showLoadingState() {
-        const content = document.getElementById('dashboard-content');
-        if (content) {
-            content.innerHTML = `
-                <div class="text-center py-5">
-                    <div class="fema-loader"></div>
-                    <p class="mt-3">Loading your case information...</p>
-                </div>
-            `;
-        }
+        document.getElementById('dashboard-loading').classList.remove('d-none');
+        document.getElementById('dashboard-content').classList.add('d-none');
     }
 
     hideLoadingState() {
-        // Content will be populated by displayDashboard
+        document.getElementById('dashboard-loading').classList.add('d-none');
+        document.getElementById('dashboard-content').classList.remove('d-none');
     }
 
-    showAlert(message, type, duration = 0) {
+    showDashboard() {
+        document.getElementById('login-section').classList.add('d-none');
+        document.getElementById('dashboard-section').classList.remove('d-none');
+    }
+
+    showAlert(message, type) {
         const alertDiv = document.getElementById('login-alert');
-        if (alertDiv) {
-            alertDiv.textContent = message;
-            alertDiv.className = `alert alert-${type} mt-3`;
-            alertDiv.classList.remove('d-none');
-
-            if (duration > 0) {
-                setTimeout(() => {
-                    alertDiv.classList.add('d-none');
-                }, duration);
-            }
-        }
-    }
-
-    setLoginButtonState(loading) {
-        const loginBtn = document.getElementById('login-btn');
-        if (loginBtn) {
-            if (loading) {
-                loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Authenticating...';
-                loginBtn.disabled = true;
-            } else {
-                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt me-2"></i>Access Case';
-                loginBtn.disabled = false;
-            }
-        }
-    }
-
-    validateLoginInput(caseNumber, lastName, password) {
-        return caseNumber.length > 0 && lastName.length > 0 && password.length > 0;
-    }
-
-    logout() {
-        if (this.state.token) {
-            this.apiCall('/logout', 'POST').catch(() => {});
-        }
-        
-        this.clearSession();
-        this.showLogin();
-        this.showAlert('You have been logged out.', 'info', 3000);
-    }
-
-    clearSession() {
-        this.state.token = null;
-        this.state.user = null;
-        localStorage.removeItem('fema_token');
-        localStorage.removeItem('fema_user');
-        
-        if (this.state.sessionTimer) {
-            clearInterval(this.state.sessionTimer);
-        }
+        alertDiv.innerHTML = message;
+        alertDiv.className = `alert alert-${type} mt-3`;
+        alertDiv.classList.remove('d-none');
     }
 }
 
-// Initialize the application
+// Initialize app
 const femaSystem = new FEMACaseSystem();
-
-// Make logout available globally
-window.logout = () => femaSystem.logout();
+window.logout = () => {
+    localStorage.removeItem('fema_session');
+    location.reload();
+};
