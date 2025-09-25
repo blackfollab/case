@@ -161,21 +161,23 @@ app.get('/api/dashboard', authenticateToken, (req, res) => {
 
         // Get payments (last 6 months)
         const payments = readJSON('payments.json');
-        const twelveMonthsAgo = new Date();
-        twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12);
+       const twelveMonthsAgo = new Date();
+twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12);
+console.log('Twelve months ago:', twelveMonthsAgo); // Debug line
 
-        const userPayments = payments
-            .filter(p => p.case_number === userCaseNumber)
-            .filter(p => {
-                try {
-                    const paymentDate = new Date(p.payment_date);
-                    return paymentDate >= twelveMonthsAgo;
-                } catch (e) {
-                    return false;
-                }
-            })
-            .sort((a, b) => new Date(b.payment_date) - new Date(a.payment_date));
-
+const userPayments = payments
+    .filter(p => p.case_number === userCaseNumber)
+    .filter(p => {
+        try {
+            const paymentDate = new Date(p.payment_date);
+            console.log('Payment date:', p.payment_date, 'Parsed:', paymentDate); // Debug
+            return paymentDate >= twelveMonthsAgo && paymentDate <= new Date(); // Added upper bound
+        } catch (e) {
+            console.log('Invalid date:', p.payment_date, e); // Debug
+            return false;
+        }
+    })
+    .sort((a, b) => new Date(b.payment_date) - new Date(a.payment_date));
         // Get lawyer data
         const lawyers = readJSON('lawyers.json');
         const lawyer = lawyers.find(l => l.case_number === userCaseNumber) || {};
