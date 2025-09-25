@@ -316,8 +316,8 @@ class FEMACaseSystem {
                 </div>
                 <div class="col-md-4 text-center">
                     <div class="security-status">
-                        <i class="fas fa-lock fa-2x text-success me-2"></i>
-                        <span class="text-success">Secure Connection</span>
+                        <i class="fas fa-link text-success me-1"></i>
+                        <a href="https://www.fema.gov"><span class="text-success">Official Website</span></a>
                     </div>
                 </div>
             </div>
