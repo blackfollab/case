@@ -161,7 +161,7 @@ app.get('/api/dashboard', authenticateToken, (req, res) => {
 
         // Get payments (last 6 months)
         const payments = readJSON('payments.json');
-        const oneMonthsAgo = new Date();
+        const sixMonthsAgo = new Date();
         sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 12);
 
         const userPayments = payments
