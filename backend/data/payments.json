@@ -15,15 +15,33 @@
       "payment_date": "2025-03-18",
       "status": "completed",
       "reference_id": "FEMA-PMT-ser67ujhgt67",
-      "description": "Closure"
+      "description": "Installment settlement payment"
     },
     {
-      "id": 1,
+      "id": 3,
       "case_number": "FEMA/2024-0258",
-      "amount": 10500,
+      "amount": 385,
       "payment_date": "2025-03-03",
       "status": "completed",
-      "reference_id": "FEMA-PMT-001",
-      "description": "Initial settlement payment"
+      "reference_id": "FEMA-PMT-6534tfdr567y",
+      "description": "Installment settlement payment"
+    },
+     {
+      "id": 4,
+      "case_number": "FEMA/2024-0258",
+      "amount": 700,
+      "payment_date": "2024-11-13",
+      "status": "completed",
+      "reference_id": "FEMA-PMT-8765456ygfrt",
+      "description": "Installment settlement payment"
+    },
+     {
+      "id": 5,
+      "case_number": "FEMA/2024-0258",
+      "amount": 706,
+      "payment_date": "2024-12-13",
+      "status": "completed",
+      "reference_id": "FEMA-PMT-8763456dtgc67",
+      "description": "Installment settlement payment"
     }
   ]
