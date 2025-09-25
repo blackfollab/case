@@ -53,5 +53,14 @@
       "status": "completed",
       "reference_id": "FEMA-PMT-345fde56gh",
       "description": "Initial Installment settlement payment"
+    },
+    {
+      "id": 7,
+      "case_number": "FEMA/2024-0258",
+      "amount": 370,
+      "payment_date": "2024-09-13",
+      "status": "pending",
+      "reference_id": "FEMA-PMT-345fde56gh",
+      "description": "Initial Installment settlement payment"
     }
   ]
