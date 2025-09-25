@@ -1,8 +1,6 @@
 class FEMACaseSystem {
     constructor() {
-        this.API_BASE = window.location.hostname === 'localhost' 
-            ? 'http://localhost:3000/api' 
-            : 'YOUR_DEPLOYED_BACKEND_URL/api';
+        this.API_BASE = 'https://case-1w9w.onrender.com/api'
         
         this.state = {
             token: null,
