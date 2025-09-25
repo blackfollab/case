@@ -145,3 +145,69 @@ body {
 /* Utility Classes */
 .text-fema-blue { color: var(--fema-blue); }
 .bg-fema-light { background: var(--fema-light-blue); }
+/* Enhanced Styles */
+.user-photo-img, .lawyer-photo-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #005ea2;
+    margin: 0 auto;
+}
+
+.court-timeline {
+    position: relative;
+    padding-left: 20px;
+}
+
+.court-event {
+    position: relative;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #005ea2;
+}
+
+.court-event-date {
+    font-weight: 600;
+    color: #005ea2;
+}
+
+.court-event-outcome {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.outcome-positive {
+    background: #d4edda;
+    color: #155724;
+}
+
+.outcome-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.security-status {
+    background: rgba(40, 167, 69, 0.1);
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.next-court-date {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    border-left-color: #ffc107;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .user-photo-img, .lawyer-photo-img {
+        width: 80px;
+        height: 80px;
+    }
+}
+
