@@ -17,7 +17,7 @@ app.use(cors({
     origin: [
         'https://whitesmoke-loris-366484.hostingersite.com',         // All Netlify subdomains
         'https://femacase.netlify.app', 
-        'http://localhost:8080',
+        'https://fema-secure.ultrapanel.us',
         'http://localhost:5500'
     ],
     credentials: true,
